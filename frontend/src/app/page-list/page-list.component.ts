@@ -2,14 +2,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { PoBreadcrumb } from '@po-ui/ng-components';
-import { PoCheckboxGroupOption, PoMultiselectOption } from '@po-ui/ng-components';
+import { PoCheckboxGroupOption } from '@po-ui/ng-components';
 
 import { PoDialogService } from '@po-ui/ng-components';
-import { PoModalAction, PoModalComponent } from '@po-ui/ng-components';
+import { PoModalAction } from '@po-ui/ng-components';
 import { PoNotificationService } from '@po-ui/ng-components';
 import { PoPageAction, PoPageFilter } from '@po-ui/ng-components';
 import { PoTableColumn } from '@po-ui/ng-components';
-import { PoPageListComponent } from '@po-ui/ng-components';
 
 import { PoPageListService } from '../page-list/po-page-list.service';
 
@@ -32,7 +31,7 @@ export class PageListComponent implements OnInit {
   statusOptions: Array<PoCheckboxGroupOption> = [];
 
   public readonly actions: Array<PoPageAction> = [
-    { label: 'Concluir', action: this.concludePlanning.bind(this), disabled: this.disableHireButton.bind(this) },
+    { label: 'Alterar conclusão', action: this.concludePlanning.bind(this), disabled: this.disableHireButton.bind(this) },
     { label: 'Excluir', action: this.excludePlannig.bind(this), disabled: this.disableHireButton.bind(this) }
   ];
 
@@ -108,12 +107,12 @@ export class PageListComponent implements OnInit {
       case 'Concluido':
         console.log("ID do registro: ", selectedCandidate['id'], ", ", selectedCandidate['concluded']);
         
-        selectedCandidate['concluded'] = 'Pendente';
+        selectedCandidate['concluded'] = 'Em andamento';
 
-        this.poNotification.warning('Programação pendente!');
+        this.poNotification.warning('Programação em andamento!');
         break;
 
-      case 'Pendente':
+      case 'Em andamento':
         console.log("ID do registro: ", selectedCandidate['id'], ", ", selectedCandidate['concluded']);
 
         selectedCandidate['concluded'] = 'Concluido';
@@ -126,6 +125,7 @@ export class PageListComponent implements OnInit {
   excludePlannig() {
     const selectedCandidate: any = this.hiringProcesses.find((candidate: any) => candidate['$selected']);
     console.log("ID do registro: ", selectedCandidate['id']);
+    console.log(this.concludePlanning.bind(this))
   }
 
   hiringProcessesFilter(filters: any) {

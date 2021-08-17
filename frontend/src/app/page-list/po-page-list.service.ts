@@ -12,7 +12,7 @@ export class PoPageListService {
         type: 'subtitle',
         subtitles: [
           { value: 'Concluido', color: 'success', label: 'Concluído', content: '1' },
-          { value: 'Pendente', color: 'warning', label: 'Pendente', content: '2' }
+          { value: 'Em andamento', color: 'warning', label: 'Em andamento', content: '2' }
         ]
       },
       { property: 'description', label: 'Descrição', type: 'string' },
@@ -31,7 +31,7 @@ export class PoPageListService {
   getHireStatus() {
     return [
       { value: 'Concluido', label: 'Concluído' },
-      { value: 'Pendente', label: 'Pendente' }
+      { value: 'Em andamento', label: 'Em andamento' }
     ];
   }
 
@@ -53,7 +53,7 @@ export class PoPageListService {
       },
       {
         id: '2',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'ACPO Exemplo 002',
         priority: '5',
         responsible: 'Maria',
@@ -67,7 +67,7 @@ export class PoPageListService {
       },
       {
         id: '3',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Exemplo 003',
         priority: '5',
         responsible: 'Jurema, Maradona',
@@ -81,7 +81,7 @@ export class PoPageListService {
       },
       {
         id: '4',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Exemplo 005',
         priority: '5',
         responsible: 'Pelé, Bill Gates',
@@ -109,7 +109,7 @@ export class PoPageListService {
       },
       {
         id: '6',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Projeto teste',
         priority: '5',
         responsible: 'Jorgita',
@@ -123,7 +123,7 @@ export class PoPageListService {
       },
       {
         id: '7',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Buscar algo',
         priority: '5',
         responsible: 'Klarckson Neves',
@@ -137,7 +137,7 @@ export class PoPageListService {
       },
       {
         id: '8',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Buscar algo',
         priority: '5',
         responsible: 'Klarckson Neves',
@@ -151,7 +151,7 @@ export class PoPageListService {
       },
       {
         id: '9',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Buscar algo',
         priority: '5',
         responsible: 'Klarckson Neves',
@@ -165,7 +165,7 @@ export class PoPageListService {
       },
       {
         id: '10',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Buscar algo',
         priority: '5',
         responsible: 'Klarckson Neves',
@@ -179,7 +179,7 @@ export class PoPageListService {
       },
       {
         id: '11',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Buscar algo',
         priority: '5',
         responsible: 'Klarckson Neves',
@@ -193,7 +193,7 @@ export class PoPageListService {
       },
       {
         id: '12',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Buscar algo',
         priority: '5',
         responsible: 'Klarckson Neves',
@@ -207,7 +207,7 @@ export class PoPageListService {
       },
       {
         id: '13',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Buscar algo',
         priority: '5',
         responsible: 'Klarckson Neves',
@@ -221,7 +221,7 @@ export class PoPageListService {
       },
       {
         id: '14',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Buscar algo',
         priority: '5',
         responsible: 'Klarckson Neves',
@@ -235,7 +235,7 @@ export class PoPageListService {
       },
       {
         id: '15',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Buscar algo',
         priority: '5',
         responsible: 'Klarckson Neves',
@@ -249,7 +249,7 @@ export class PoPageListService {
       },
       {
         id: '16',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Buscar algo',
         priority: '5',
         responsible: 'Klarckson Neves',
@@ -263,7 +263,7 @@ export class PoPageListService {
       },
       {
         id: '17',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Buscar algo',
         priority: '5',
         responsible: 'Klarckson Neves',
@@ -277,7 +277,7 @@ export class PoPageListService {
       },
       {
         id: '18',
-        concluded: 'Pendente',
+        concluded: 'Em andamento',
         description: 'Buscar algo',
         priority: '5',
         responsible: 'Klarckson Neves',

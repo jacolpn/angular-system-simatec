@@ -2,7 +2,6 @@
   #poPageList
   p-title="Programação e planejamento SIMATEC"
   [p-actions]="actions"
-  [p-breadcrumb]="breadcrumb"
   [p-disclaimer-group]="disclaimerGroup"
   [p-filter]="filterSettings"
 >
@@ -17,7 +16,11 @@
   </po-table>
 </po-page-list>
 
-<po-modal #advancedFilterModal p-title="Advanced filter" [p-primary-action]="advancedFilterPrimaryAction">
-  <po-checkbox-group name="concluded" [(ngModel)]="concluded"  p-label="Concluído" [p-options]="statusOptions">
+<po-modal #advancedFilterModal p-title="Busca avançada" [p-primary-action]="advancedFilterPrimaryAction">
+  <po-checkbox-group name="concluded" [(ngModel)]="concluded"  p-label="Situação da programação:" [p-options]="statusOptions">
   </po-checkbox-group>
+</po-modal>
+
+<po-modal #newPlanning p-title="Nova programação" [p-primary-action]="newPlanningPrimaryAction" [p-secondary-action]="closePlanningSecondaryAction">
+  <app-insert-planning></app-insert-planning>
 </po-modal>

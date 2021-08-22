@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { PoBreadcrumb } from '@po-ui/ng-components';
 import { PoCheckboxGroupOption } from '@po-ui/ng-components';
 
 import { PoDialogService } from '@po-ui/ng-components';
@@ -18,8 +17,9 @@ import { PoPageListService } from '../page-list/po-page-list.service';
   styleUrls: ['./page-list.component.css']
 })
 export class PageListComponent implements OnInit {
-  @ViewChild('advancedFilterModal', { static: true }) advancedFilterModal: any; // PoModalComponent;
-  @ViewChild('poPageList', { static: true }) poPageList: any; // PoPageListComponent;
+  @ViewChild('advancedFilterModal', { static: true }) advancedFilterModal: any;
+  @ViewChild('newPlanning', { static: true }) newPlanning: any;
+  @ViewChild('poPageList', { static: true }) poPageList: any;
 
   disclaimerGroup: any;
   hiringProcesses: Array<object> = [];
@@ -32,15 +32,9 @@ export class PageListComponent implements OnInit {
 
   public readonly actions: Array<PoPageAction> = [
     { label: 'Alterar conclusão', action: this.concludePlanning.bind(this), disabled: this.disableHireButton.bind(this) },
+    { label: 'Novo', action: this.insertPlanning.bind(this) },
     { label: 'Excluir', action: this.excludePlannig.bind(this), disabled: this.disableHireButton.bind(this) }
   ];
-
-  public readonly breadcrumb: PoBreadcrumb = {
-    items: [
-      { label: 'Home', action: this.beforeRedirect.bind(this) },
-      { label: 'Programação e planejamento SIMATEC' }
-    ]
-  };
 
   public readonly advancedFilterPrimaryAction: PoModalAction = {
     action: () => {
@@ -53,10 +47,29 @@ export class PageListComponent implements OnInit {
     label: 'Aplicar filtro'
   };
 
+  public readonly newPlanningPrimaryAction: PoModalAction = {
+    action: () => {
+      console.log('NewPlanningPrimaryAction()!')
+      
+      this.poNotification.success('Programação salva com sucesso!')
+      this.closeModal();
+    },
+
+    label: 'Salvar'
+  };
+
+  public readonly closePlanningSecondaryAction: PoModalAction = {
+    action: () => {
+      this.closeModal();
+    },
+
+    label: 'Fechar'
+  };
+
   public readonly filterSettings: PoPageFilter = {
     action: this.filterAction.bind(this),
     advancedAction: this.advancedFilterActionModal.bind(this),
-    placeholder: 'Search'
+    placeholder: 'Pesquisar'
   };
 
   private disclaimers: any = [];
@@ -80,6 +93,18 @@ export class PageListComponent implements OnInit {
     this.planningColumns = this.sampleHiringProcessesService.getColumns();
     this.statusOptions = this.sampleHiringProcessesService.getHireStatus();
     this.planningFiltered = [...this.hiringProcesses];
+  }
+
+  closeModal() {
+    // this.form.reset();
+    this.newPlanning.close();
+  }
+
+  insertPlanning() {
+    console.log('InsertPlanning()!');
+    // this.router.navigate(['/teste'])
+    
+    this.newPlanning.open();
   }
 
   advancedFilterActionModal() {
@@ -166,17 +191,5 @@ export class PageListComponent implements OnInit {
     this.planningFiltered = [...this.hiringProcesses];
     this.concluded = [];
     this.jobDescription = [];
-  }
-
-  private beforeRedirect(itemBreadcrumbLabel: any) {
-    if (this.hiringProcesses.some((candidate: any) => candidate['$selected'])) {
-      this.poDialog.confirm({
-        title: `Confirm redirect to ${itemBreadcrumbLabel}`,
-        message: `There is data selected. Are you sure you want to quit?`,
-        confirm: () => this.router.navigate(['/'])
-      });
-    } else {
-      this.router.navigate(['/']);
-    }
   }
 }

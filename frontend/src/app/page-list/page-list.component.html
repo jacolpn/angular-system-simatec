@@ -22,5 +22,13 @@
 </po-modal>
 
 <po-modal #newPlanning p-title="Nova programação" [p-primary-action]="newPlanningPrimaryAction" [p-secondary-action]="closePlanningSecondaryAction">
-  <app-insert-planning></app-insert-planning>
+  <!-- {{ dynamicForm?.value | json }} -->
+  <!-- {{ dynamicForm?.form?.status| json }} -->
+  <po-dynamic-form
+    #dynamicForm
+    p-auto-focus="description"
+    [p-value]="person"
+    [p-fields]="fields"
+  >
+  </po-dynamic-form>
 </po-modal>

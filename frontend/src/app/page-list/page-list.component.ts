@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { PoCheckboxGroupOption } from '@po-ui/ng-components';
+import { PoCheckboxGroupOption, PoDynamicFormField } from '@po-ui/ng-components';
 
 import { PoDialogService } from '@po-ui/ng-components';
 import { PoModalAction } from '@po-ui/ng-components';
@@ -10,6 +10,8 @@ import { PoPageAction, PoPageFilter } from '@po-ui/ng-components';
 import { PoTableColumn } from '@po-ui/ng-components';
 
 import { PoPageListService } from '../page-list/po-page-list.service';
+import { InsertPlanning } from './po-page-insert.model';
+import { PoPageInsertService } from './po-page-insert.service';
 
 @Component({
   selector: 'app-page-list',
@@ -20,6 +22,7 @@ export class PageListComponent implements OnInit {
   @ViewChild('advancedFilterModal', { static: true }) advancedFilterModal: any;
   @ViewChild('newPlanning', { static: true }) newPlanning: any;
   @ViewChild('poPageList', { static: true }) poPageList: any;
+  @ViewChild('dynamicForm', { static: true }) dynamicForm: any;
 
   disclaimerGroup: any;
   hiringProcesses: Array<object> = [];
@@ -29,6 +32,90 @@ export class PageListComponent implements OnInit {
   labelFilter: string = '';
   concluded: Array<string> = [];
   statusOptions: Array<PoCheckboxGroupOption> = [];
+
+  person = {};
+  fields: Array<PoDynamicFormField> = [
+      {
+        label: 'Descrição',
+        property: 'description',
+        required: true,
+        minLength: 2,
+        maxLength: 50,
+        gridColumns: 6,
+        gridSmColumns: 12,
+        order: 1
+      },
+      {
+        label: 'Prioridade',
+        property: 'priority',
+        required: true,
+        minLength: 2,
+        maxLength: 50,
+        gridColumns: 6,
+        gridSmColumns: 12,
+        order: 1
+      },
+      {
+        label: 'Responsável',
+        property: 'responsible',
+        required: true,
+        minLength: 2,
+        maxLength: 50,
+        gridColumns: 6,
+        gridSmColumns: 12,
+        order: 1
+      },
+      {
+        label: 'Tempo de execução',
+        property: 'runtime',
+        required: true,
+        minLength: 2,
+        maxLength: 50,
+        gridColumns: 6,
+        gridSmColumns: 12,
+        order: 1
+      },
+      {
+        property: 'startExecution',
+        label: 'Início de execução',
+        type: 'date',
+        format: 'mm/dd/yyyy',
+        gridColumns: 6,
+        gridSmColumns: 12,
+        errorMessage: 'The date must be before the year 2010.',
+        order: 1
+      },
+      {
+        label: 'Relação a obras',
+        property: 'relationWork',
+        required: true,
+        minLength: 2,
+        maxLength: 50,
+        gridColumns: 6,
+        gridSmColumns: 12,
+        order: 1
+      },
+      {
+        label: 'Veículo',
+        property: 'vehicle',
+        required: true,
+        minLength: 2,
+        maxLength: 50,
+        gridColumns: 6,
+        gridSmColumns: 12,
+        order: 1
+      },
+      {
+        label: 'Opera fim de semana',
+        property: 'operationWeekend',
+        required: true,
+        minLength: 2,
+        maxLength: 50,
+        gridColumns: 6,
+        gridSmColumns: 12,
+        order: 1
+      }
+  ];
 
   public readonly actions: Array<PoPageAction> = [
     { label: 'Alterar conclusão', action: this.concludePlanning.bind(this), disabled: this.disableHireButton.bind(this) },
@@ -44,17 +131,26 @@ export class PageListComponent implements OnInit {
       this.filterAction(filters);
     },
 
-    label: 'Aplicar filtro'
+    label: 'Buscar'
   };
 
   public readonly newPlanningPrimaryAction: PoModalAction = {
     action: () => {
       console.log('NewPlanningPrimaryAction()!')
-      
-      this.poNotification.success('Programação salva com sucesso!')
-      this.closeModal();
-    },
 
+      if (this.dynamicForm.form.status == "INVALID") {
+        this.poNotification.error('Favor preencher todos os campos!');
+      } else {
+        this.newPlanningPrimaryAction.loading = true;
+  
+        setTimeout(() => {
+          this.poNotification.success('Programação salva com sucesso!')
+          this.newPlanningPrimaryAction.loading = false;
+          this.dynamicForm.form.reset();
+          this.closeModal();
+        }, 700);
+      }
+    },
     label: 'Salvar'
   };
 
@@ -78,7 +174,8 @@ export class PageListComponent implements OnInit {
     private sampleHiringProcessesService: PoPageListService,
     private poNotification: PoNotificationService,
     private poDialog: PoDialogService,
-    private router: Router
+    private router: Router,
+    private poPageInsertService: PoPageInsertService
   ) {}
 
   ngOnInit() {
@@ -95,6 +192,15 @@ export class PageListComponent implements OnInit {
     this.planningFiltered = [...this.hiringProcesses];
   }
 
+  sendPlanning(insertPlanning: InsertPlanning) {
+    this.poPageInsertService
+        .postPlanning(insertPlanning)
+        .subscribe({
+                next: (value) => this.poNotification.success('Data saved successfully!'),
+                error: err => console.log(err)
+        });
+  }
+
   closeModal() {
     // this.form.reset();
     this.newPlanning.close();
@@ -102,6 +208,7 @@ export class PageListComponent implements OnInit {
 
   insertPlanning() {
     console.log('InsertPlanning()!');
+    console.log(this.dynamicForm.form.status);
     // this.router.navigate(['/teste'])
     
     this.newPlanning.open();

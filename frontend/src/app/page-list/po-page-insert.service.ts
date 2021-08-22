@@ -3,10 +3,10 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
 import { environment } from "src/environments/environment";
-import { InsertPlanning } from "./insert-planning.model";
+import { InsertPlanning } from "./po-page-insert.model";
 
 @Injectable()
-export class InsertPlanningService {
+export class PoPageInsertService {
     constructor(private http: HttpClient) { }
 
     postPlanning(insertPlanning: InsertPlanning): Observable<string> {

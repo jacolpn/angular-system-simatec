@@ -89,10 +89,9 @@ export class PageListComponent implements OnInit {
         label: 'Relação a obras',
         property: 'relationWork',
         required: true,
-        minLength: 2,
-        maxLength: 50,
         gridColumns: 6,
         gridSmColumns: 12,
+        options: ['Sim', 'Não'],
         order: 1
       },
       {
@@ -109,10 +108,9 @@ export class PageListComponent implements OnInit {
         label: 'Opera fim de semana',
         property: 'operationWeekend',
         required: true,
-        minLength: 2,
-        maxLength: 50,
         gridColumns: 6,
         gridSmColumns: 12,
+        options: ['Sim', 'Não'],
         order: 1
       }
   ];
@@ -190,6 +188,8 @@ export class PageListComponent implements OnInit {
     this.planningColumns = this.sampleHiringProcessesService.getColumns();
     this.statusOptions = this.sampleHiringProcessesService.getHireStatus();
     this.planningFiltered = [...this.hiringProcesses];
+
+    this.populateDisclaimers(['Em andamento']);
   }
 
   sendPlanning(insertPlanning: InsertPlanning) {

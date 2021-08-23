@@ -12,8 +12,7 @@ export class PoPageListService {
         type: 'subtitle',
         subtitles: [
           { value: 'Concluido', color: 'success', label: 'Concluído', content: '1' },
-          { value: 'Em andamento', color: 'warning', label: 'Em andamento', content: '2' },
-          { value: 'Suspenso', color: 'danger', label: 'Suspenso', content: '3' }
+          { value: 'Em andamento', color: 'warning', label: 'Em andamento', content: '2' }
         ]
       },
       { property: 'description', label: 'Descrição', type: 'string' },
@@ -32,8 +31,7 @@ export class PoPageListService {
   getHireStatus() {
     return [
       { value: 'Concluido', label: 'Concluído' },
-      { value: 'Em andamento', label: 'Em andamento' },
-      { value: 'Suspenso', label: 'Suspenso' }
+      { value: 'Em andamento', label: 'Em andamento' }
     ];
   }
 
@@ -69,7 +67,7 @@ export class PoPageListService {
       },
       {
         id: '3',
-        concluded: 'Suspenso',
+        concluded: 'Em andamento',
         description: 'Exemplo 003',
         priority: '2-iniciar na data programada',
         responsible: 'Jurema, Maradona',
@@ -83,7 +81,7 @@ export class PoPageListService {
       },
       {
         id: '4',
-        concluded: 'Suspenso',
+        concluded: 'Em andamento',
         description: 'Exemplo 005',
         priority: '2-iniciar na data programada',
         responsible: 'Pelé, Bill Gates',

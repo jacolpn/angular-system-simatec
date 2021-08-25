@@ -5,10 +5,13 @@ import { PlanningRepositories } from "../repositories/PlanningRepositories";
 class ListPlanningService {
     async execute() {
         const planningRepositories = getCustomRepository(PlanningRepositories);
-        const planning = await planningRepositories.find();
-
+        var planning = await planningRepositories.find({
+            order: {
+                created_at: "DESC",
+            },
+        });
         return classToPlain(planning);
     }
 }
 
-export { ListPlanningService }
+export { ListPlanningService };

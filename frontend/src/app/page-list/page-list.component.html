@@ -11,7 +11,7 @@
     [p-sort]="true"
     [p-striped]="true"
     [p-columns]="planningColumns"
-    [p-items]="planningFiltered"
+    [p-items]="planning"
   >
   </po-table>
 </po-page-list>
@@ -27,7 +27,6 @@
   <po-dynamic-form
     #dynamicForm
     p-auto-focus="description"
-    [p-value]="person"
     [p-fields]="fields"
   >
   </po-dynamic-form>

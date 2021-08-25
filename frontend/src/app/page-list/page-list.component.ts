@@ -1,17 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { PoCheckboxGroupOption, PoDynamicFormField } from '@po-ui/ng-components';
-
-import { PoDialogService } from '@po-ui/ng-components';
 import { PoModalAction } from '@po-ui/ng-components';
 import { PoNotificationService } from '@po-ui/ng-components';
 import { PoPageAction, PoPageFilter } from '@po-ui/ng-components';
 import { PoTableColumn } from '@po-ui/ng-components';
 
 import { PoPageListService } from '../page-list/po-page-list.service';
-import { InsertPlanning } from './po-page-insert.model';
-import { PoPageInsertService } from './po-page-insert.service';
+import { Planning } from './planning.model';
 
 @Component({
   selector: 'app-page-list',
@@ -27,13 +23,10 @@ export class PageListComponent implements OnInit {
   disclaimerGroup: any;
   hiringProcesses: Array<object> = [];
   planningColumns: Array<PoTableColumn> = [];
-  planningFiltered: Array<object> = [];
-  jobDescription: Array<string> = [];
   labelFilter: string = '';
   concluded: Array<string> = [];
   statusOptions: Array<PoCheckboxGroupOption> = [];
-
-  person = {};
+  planning: Array<object> = [];
   fields: Array<PoDynamicFormField> = [
       {
         label: 'Descrição',
@@ -134,15 +127,13 @@ export class PageListComponent implements OnInit {
 
   public readonly newPlanningPrimaryAction: PoModalAction = {
     action: () => {
-      console.log('NewPlanningPrimaryAction()!')
-
       if (this.dynamicForm.form.status == "INVALID") {
         this.poNotification.error('Favor preencher todos os campos!');
       } else {
         this.newPlanningPrimaryAction.loading = true;
-  
+
         setTimeout(() => {
-          this.poNotification.success('Programação salva com sucesso!')
+          this.savePlanning(this.dynamicForm.form.value);
           this.newPlanningPrimaryAction.loading = false;
           this.dynamicForm.form.reset();
           this.closeModal();
@@ -156,7 +147,6 @@ export class PageListComponent implements OnInit {
     action: () => {
       this.closeModal();
     },
-
     label: 'Fechar'
   };
 
@@ -169,12 +159,9 @@ export class PageListComponent implements OnInit {
   private disclaimers: any = [];
 
   constructor(
-    private sampleHiringProcessesService: PoPageListService,
     private poNotification: PoNotificationService,
-    private poDialog: PoDialogService,
-    private router: Router,
-    private poPageInsertService: PoPageInsertService
-  ) {}
+    private poPageListService: PoPageListService
+  ) { }
 
   ngOnInit() {
     this.disclaimerGroup = {
@@ -183,34 +170,95 @@ export class PageListComponent implements OnInit {
       change: this.onChangeDisclaimer.bind(this),
       remove: this.onClearDisclaimer.bind(this)
     };
-
-    this.hiringProcesses = this.sampleHiringProcessesService.getItems();
-    this.planningColumns = this.sampleHiringProcessesService.getColumns();
-    this.statusOptions = this.sampleHiringProcessesService.getHireStatus();
-    this.planningFiltered = [...this.hiringProcesses];
-
-    this.populateDisclaimers(['Em andamento']);
+    this.getPlanning();
+    this.planningColumns = this.poPageListService.getColumns();
+    this.statusOptions = this.poPageListService.getHireStatus();
   }
 
-  sendPlanning(insertPlanning: InsertPlanning) {
-    this.poPageInsertService
-        .postPlanning(insertPlanning)
+  getPlanning() {
+    this.poPageListService.getPlanningHTTP().subscribe({
+      next: (value) => {
+        this.planning = value.map((item: any) => new Planning(
+          item.id,
+          item.concluded,
+          item.description,
+          item.priority,
+          item.responsible,
+          item.runtime,
+          item.startExecution,
+          item.status,
+          item.relationWork,
+          item.vehicle,
+          item.operationWeekend,
+          item.scheduleTomorrow
+        ))
+
+        this.hiringProcesses = this.planning;
+        this.planning = [...this.hiringProcesses];
+        this.populateDisclaimers(['Em andamento']);
+      },
+      error: err => {
+        this.planning = this.poPageListService.getItems();
+        this.hiringProcesses = this.planning;
+        this.planning = [...this.hiringProcesses];
+        this.populateDisclaimers(['Em andamento']);
+        this.poNotification.error(`Banco de dados offline!`)
+
+        console.log(err);
+      }
+    });
+  }
+
+  savePlanning(planning: Planning) {
+    planning.concluded = 'Em andamento';
+    planning.status = 'No prazo';
+    planning.scheduleTomorrow = 'Sim';
+
+    console.log(planning);
+
+    this.poPageListService
+        .postPlanning(planning)
         .subscribe({
-                next: (value) => this.poNotification.success('Data saved successfully!'),
-                error: err => console.log(err)
+          next: value => {
+            this.poNotification.success('Programação salva com sucesso!');
+            this.getPlanning();
+          },
+          error: err =>  {
+            this.poNotification.error(`Banco de dados offline!`)
+            this.planning.push(planning);
+
+            console.log(err);
+          }
+        });
+  }
+
+  excludePlannig() {
+    const selectedCandidate: any = this.hiringProcesses.find((candidate: any) => candidate['$selected']);
+
+    this.poPageListService
+        .putPlanning(selectedCandidate['id'])
+        .subscribe({
+          next: value => {
+            this.poNotification.success('Programação removida com sucesso!');
+            this.getPlanning();
+          },
+          error: err =>  {
+            this.poNotification.error(`Banco de dados offline!`)
+
+            var indice = this.planning.indexOf(selectedCandidate);
+
+            this.planning.splice(indice, 1);
+
+            console.log(err);
+          }
         });
   }
 
   closeModal() {
-    // this.form.reset();
     this.newPlanning.close();
   }
 
   insertPlanning() {
-    console.log('InsertPlanning()!');
-    console.log(this.dynamicForm.form.status);
-    // this.router.navigate(['/teste'])
-    
     this.newPlanning.open();
   }
 
@@ -253,15 +301,9 @@ export class PageListComponent implements OnInit {
         break;
     }
   }
-  
-  excludePlannig() {
-    const selectedCandidate: any = this.hiringProcesses.find((candidate: any) => candidate['$selected']);
-    console.log("ID do registro: ", selectedCandidate['id']);
-    console.log(this.concludePlanning.bind(this))
-  }
 
   hiringProcessesFilter(filters: any) {
-    this.planningFiltered = this.hiringProcesses.filter((item: any) =>
+    this.planning = this.hiringProcesses.filter((item: any) =>
       Object.keys(item).some(key => !(item[key] instanceof Object) && this.includeFilter(item[key], filters))
     );
   }
@@ -295,8 +337,7 @@ export class PageListComponent implements OnInit {
   }
 
   resetFilterHiringProcess() {
-    this.planningFiltered = [...this.hiringProcesses];
+    this.planning = [...this.hiringProcesses];
     this.concluded = [];
-    this.jobDescription = [];
   }
 }

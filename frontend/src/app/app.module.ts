@@ -6,7 +6,6 @@ import { PoModule } from '@po-ui/ng-components';
 import { RouterModule } from '@angular/router';
 import { PageListComponent } from './page-list/page-list.component';
 import { PoPageListService } from './page-list/po-page-list.service';
-import { PoPageInsertService } from './page-list/po-page-insert.service';
 
 @NgModule({
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -19,7 +18,7 @@ import { PoPageInsertService } from './page-list/po-page-insert.service';
     PoModule,
     RouterModule.forRoot([])
   ],
-  providers: [PoPageListService, PoPageInsertService],
+  providers: [PoPageListService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

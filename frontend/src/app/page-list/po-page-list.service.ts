@@ -1,9 +1,15 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { PoTableColumn } from '@po-ui/ng-components';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { Planning } from './planning.model';
 
 @Injectable()
 export class PoPageListService {
+  constructor(private http: HttpClient) { }
+
   getColumns(): Array<PoTableColumn> {
     return [
       {
@@ -19,7 +25,7 @@ export class PoPageListService {
       { property: 'priority', label: 'Prioridade' },
       { property: 'responsible', label: 'Responsável' },
       { property: 'runtime', label: 'Tempo de execução' },
-      { property: 'startExecution', label: 'Início de execução' },
+      { property: 'startExecution', label: 'Início de execução', type: 'date' },
       { property: 'status', label: 'Status' },
       { property: 'relationWork', label: 'Relação a obras' },
       { property: 'vehicle', label: 'Veículo' },
@@ -134,161 +140,19 @@ export class PoPageListService {
         vehicle: 'Ka Hatch',
         operationWeekend: 'Não',
         scheduleTomorrow: 'Sim'
-      },
-      {
-        id: '8',
-        concluded: 'Em andamento',
-        description: 'Buscar algo',
-        priority: '1-iniciar agora',
-        responsible: 'Klarckson Neves',
-        runtime: '730',
-        startExecution: '01/02/20',
-        status: 'Fora do prazo',
-        relationWork: 'Sim',
-        vehicle: 'Ka Hatch',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim'
-      },
-      {
-        id: '9',
-        concluded: 'Em andamento',
-        description: 'Buscar algo',
-        priority: '2-iniciar na data programada',
-        responsible: 'Klarckson Neves',
-        runtime: '730',
-        startExecution: '01/02/20',
-        status: 'Fora do prazo',
-        relationWork: 'Sim',
-        vehicle: 'Ka Hatch',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim'
-      },
-      {
-        id: '10',
-        concluded: 'Em andamento',
-        description: 'Buscar algo',
-        priority: '2-iniciar na data programada',
-        responsible: 'Klarckson Neves',
-        runtime: '730',
-        startExecution: '01/02/20',
-        status: 'Fora do prazo',
-        relationWork: 'Sim',
-        vehicle: 'Ka Hatch',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim'
-      },
-      {
-        id: '11',
-        concluded: 'Em andamento',
-        description: 'Buscar algo',
-        priority: '2-iniciar na data programada',
-        responsible: 'Klarckson Neves',
-        runtime: '730',
-        startExecution: '01/02/20',
-        status: 'Fora do prazo',
-        relationWork: 'Sim',
-        vehicle: 'Ka Hatch',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim'
-      },
-      {
-        id: '12',
-        concluded: 'Em andamento',
-        description: 'Buscar algo',
-        priority: '2-iniciar na data programada',
-        responsible: 'Klarckson Neves',
-        runtime: '730',
-        startExecution: '01/02/20',
-        status: 'Fora do prazo',
-        relationWork: 'Sim',
-        vehicle: 'Ka Hatch',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim'
-      },
-      {
-        id: '13',
-        concluded: 'Em andamento',
-        description: 'Buscar algo',
-        priority: '2-iniciar na data programada',
-        responsible: 'Klarckson Neves',
-        runtime: '730',
-        startExecution: '01/02/20',
-        status: 'Fora do prazo',
-        relationWork: 'Sim',
-        vehicle: 'Ka Hatch',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim'
-      },
-      {
-        id: '14',
-        concluded: 'Em andamento',
-        description: 'Buscar algo',
-        priority: '2-iniciar na data programada',
-        responsible: 'Klarckson Neves',
-        runtime: '730',
-        startExecution: '01/02/20',
-        status: 'Fora do prazo',
-        relationWork: 'Sim',
-        vehicle: 'Ka Hatch',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim'
-      },
-      {
-        id: '15',
-        concluded: 'Em andamento',
-        description: 'Buscar algo',
-        priority: '2-iniciar na data programada',
-        responsible: 'Klarckson Neves',
-        runtime: '730',
-        startExecution: '01/02/20',
-        status: 'Fora do prazo',
-        relationWork: 'Sim',
-        vehicle: 'Ka Hatch',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim'
-      },
-      {
-        id: '16',
-        concluded: 'Em andamento',
-        description: 'Buscar algo',
-        priority: '2-iniciar na data programada',
-        responsible: 'Klarckson Neves',
-        runtime: '730',
-        startExecution: '01/02/20',
-        status: 'Fora do prazo',
-        relationWork: 'Sim',
-        vehicle: 'Fusca 98',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim'
-      },
-      {
-        id: '17',
-        concluded: 'Em andamento',
-        description: 'Buscar algo',
-        priority: '2-iniciar na data programada',
-        responsible: 'Klarckson Neves',
-        runtime: '730',
-        startExecution: '01/02/20',
-        status: 'Fora do prazo',
-        relationWork: 'Sim',
-        vehicle: 'Ka Hatch',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim'
-      },
-      {
-        id: '18',
-        concluded: 'Em andamento',
-        description: 'Buscar algo',
-        priority: '2-iniciar na data programada',
-        responsible: 'Klarckson Neves',
-        runtime: '730',
-        startExecution: '01/02/20',
-        status: 'Fora do prazo',
-        relationWork: 'Sim',
-        vehicle: 'Ka Hatch',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim'
       }
     ];
+  }
+
+  getPlanningHTTP() {
+    return this.http.get<any>(`${environment.api}/planning`);
+  }
+
+  postPlanning(planning: Planning): Observable<string> {
+    return this.http.post<any>(`${environment.api}/planning`, planning);
+  }
+
+  putPlanning(id: String): Observable<string> {
+    return this.http.put<any>(`${environment.api}/planning`, id);
   }
 }

@@ -106,14 +106,21 @@ export class PageListComponent implements OnInit {
           item.responsible,
           item.runtime,
           item.startExecution,
-          item.status,
+          item.status = this.updateStartExecution(
+            item.startExecution,
+            item.runtime,
+            item.concluded
+          ),
           item.relationWork,
           item.vehicle,
           item.operationWeekend,
-          item.scheduleTomorrow
+          item.scheduleTomorrow = this.updateScheduleTomorrow(
+            item.startExecution,
+            item.concluded,
+            item.priority,
+            item.operationWeekend
+          )
         ))
-
-        this.updateStartExecution();
 
         this.hiringProcesses = this.planning;
         this.planning = [...this.hiringProcesses];
@@ -121,8 +128,20 @@ export class PageListComponent implements OnInit {
       },
       error: err => {
         this.planning = this.poPageListService.getItems();
-
-        this.updateStartExecution();
+        
+        this.planning.map((item: any) => {
+          item.status = this.updateStartExecution(
+            item.startExecution,
+            item.runtime,
+            item.concluded
+          ),
+          item.scheduleTomorrow = this.updateScheduleTomorrow(
+            item.startExecution,
+            item.concluded,
+            item.priority,
+            item.operationWeekend
+          );
+        })
 
         this.hiringProcesses = this.planning;
         this.planning = [...this.hiringProcesses];
@@ -133,33 +152,75 @@ export class PageListComponent implements OnInit {
     });
   }
 
-  updateStartExecution() {
-    this.planning.map((item:any) => {
-      let dataStartExecution = new Date(item.startExecution);
-      let dataHoje = new Date();
+  updateStartExecution(startExecution: Date, runtime: string, concluded: string) {
+    let dataStartExecution = new Date(startExecution);
+    let dataHoje = new Date();
+    let status;
 
-      dataStartExecution.setDate(dataStartExecution.getDate() + parseInt(item.runtime));
+    dataStartExecution.setDate(dataStartExecution.getDate() + parseInt(runtime));
+    status = 'No prazo';
 
-      if (dataStartExecution < dataHoje && item.status != "No prazo") {
-        item.status = "No prazo";
+    if (dataStartExecution < dataHoje) {
+      status = "No prazo";
+    }
+
+    if (dataStartExecution > dataHoje) {
+      status = "Fora prazo";
+    }
+
+    if (concluded == "Concluido") {
+      status = "Concluido";
+    }
+
+    return status;
+  }
+
+  updateScheduleTomorrow(startExecution: Date, concluded: string, priority: string, operationWeekend: string) {
+    let dataStartExecution = new Date(startExecution);
+    let dataHoje = new Date();
+    let dataFindSemana;
+    let scheduleTomorrow;
+
+    dataFindSemana = dataHoje.getDay() == 0 || dataHoje.getDay() == 6 ? true : false;
+    dataHoje.setDate(dataHoje.getDate() + 1);
+    scheduleTomorrow = "Não";
+
+    if (concluded != "Concluido") {
+      if (parseInt(priority) < 2 && dataStartExecution <= dataHoje) {
+        if (dataFindSemana == true && operationWeekend == "Sim") {
+          scheduleTomorrow = "Sim"
+        }
+
+        if (dataFindSemana == false && operationWeekend == "Sim") {
+          scheduleTomorrow = "Sim"
+        }
+
+        if (dataFindSemana == true && operationWeekend == "Não") {
+          scheduleTomorrow = "Sim"
+        }
       }
+    }
 
-      if (dataStartExecution > dataHoje && item.status != "Fora prazo") {
-        item.status = "Fora prazo";
-      }
-
-      if (item.concluded == "Concluido" && item.status != "Concluido") {
-        item.status = "Concluido";
-      }
-    })
-  }  
+    return scheduleTomorrow;
+  }
 
   savePlanning(planning: Planning) {
     planning.concluded = 'Em andamento';
-    planning.status = 'No prazo';
-    planning.scheduleTomorrow = 'Sim';
+    planning.status = this.updateStartExecution(
+      planning.startExecution,
+      planning.runtime,
+      planning.concluded
+    );
+    planning.scheduleTomorrow = this.updateScheduleTomorrow(
+      planning.startExecution,
+      planning.concluded,
+      planning.priority,
+      planning.operationWeekend
+    );
 
     console.log(planning);
+    console.log(planning.scheduleTomorrow);
+    console.log(planning.status);
 
     this.poPageListService
         .postPlanning(planning)

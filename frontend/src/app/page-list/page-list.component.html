@@ -17,11 +17,21 @@
 </po-page-list>
 
 <po-modal #advancedFilterModal p-title="Busca avançada" [p-primary-action]="advancedFilterPrimaryAction">
-  <po-checkbox-group name="concluded" [(ngModel)]="concluded"  p-label="Situação da programação:" [p-options]="statusOptions">
+  <po-checkbox-group
+    name="concluded"
+    [(ngModel)]="concluded"
+    p-label="Situação da programação:"
+    [p-options]="statusOptions"
+  >
   </po-checkbox-group>
 </po-modal>
 
-<po-modal #newPlanning p-title="Nova programação" [p-primary-action]="newPlanningPrimaryAction" [p-secondary-action]="closePlanningSecondaryAction">
+<po-modal
+  #newPlanning
+  p-title="Nova programação"
+  [p-primary-action]="newPlanningPrimaryAction"
+  [p-secondary-action]="closePlanningSecondaryAction"
+>
   <!-- {{ dynamicForm?.value | json }} -->
   <!-- {{ dynamicForm?.form?.status| json }} -->
   <po-dynamic-form

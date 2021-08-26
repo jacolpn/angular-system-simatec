@@ -27,86 +27,7 @@ export class PageListComponent implements OnInit {
   concluded: Array<string> = [];
   statusOptions: Array<PoCheckboxGroupOption> = [];
   planning: Array<object> = [];
-  fields: Array<PoDynamicFormField> = [
-      {
-        label: 'Descrição',
-        property: 'description',
-        required: true,
-        minLength: 2,
-        maxLength: 50,
-        gridColumns: 6,
-        gridSmColumns: 12,
-        order: 1
-      },
-      {
-        label: 'Prioridade',
-        property: 'priority',
-        required: true,
-        minLength: 2,
-        maxLength: 50,
-        gridColumns: 6,
-        gridSmColumns: 12,
-        order: 1
-      },
-      {
-        label: 'Responsável',
-        property: 'responsible',
-        required: true,
-        minLength: 2,
-        maxLength: 50,
-        gridColumns: 6,
-        gridSmColumns: 12,
-        order: 1
-      },
-      {
-        label: 'Tempo de execução',
-        property: 'runtime',
-        required: true,
-        minLength: 2,
-        maxLength: 50,
-        gridColumns: 6,
-        gridSmColumns: 12,
-        order: 1
-      },
-      {
-        property: 'startExecution',
-        label: 'Início de execução',
-        type: 'date',
-        format: 'mm/dd/yyyy',
-        gridColumns: 6,
-        gridSmColumns: 12,
-        errorMessage: 'The date must be before the year 2010.',
-        order: 1
-      },
-      {
-        label: 'Relação a obras',
-        property: 'relationWork',
-        required: true,
-        gridColumns: 6,
-        gridSmColumns: 12,
-        options: ['Sim', 'Não'],
-        order: 1
-      },
-      {
-        label: 'Veículo',
-        property: 'vehicle',
-        required: true,
-        minLength: 2,
-        maxLength: 50,
-        gridColumns: 6,
-        gridSmColumns: 12,
-        order: 1
-      },
-      {
-        label: 'Opera fim de semana',
-        property: 'operationWeekend',
-        required: true,
-        gridColumns: 6,
-        gridSmColumns: 12,
-        options: ['Sim', 'Não'],
-        order: 1
-      }
-  ];
+  fields: Array<PoDynamicFormField> = [];
 
   public readonly actions: Array<PoPageAction> = [
     { label: 'Alterar conclusão', action: this.concludePlanning.bind(this), disabled: this.disableHireButton.bind(this) },
@@ -158,10 +79,7 @@ export class PageListComponent implements OnInit {
 
   private disclaimers: any = [];
 
-  constructor(
-    private poNotification: PoNotificationService,
-    private poPageListService: PoPageListService
-  ) { }
+  constructor(private poNotification: PoNotificationService, private poPageListService: PoPageListService) { }
 
   ngOnInit() {
     this.disclaimerGroup = {
@@ -170,8 +88,10 @@ export class PageListComponent implements OnInit {
       change: this.onChangeDisclaimer.bind(this),
       remove: this.onClearDisclaimer.bind(this)
     };
+
     this.getPlanning();
     this.planningColumns = this.poPageListService.getColumns();
+    this.fields = this.poPageListService.getFields();
     this.statusOptions = this.poPageListService.getHireStatus();
   }
 
@@ -193,16 +113,52 @@ export class PageListComponent implements OnInit {
           item.scheduleTomorrow
         ))
 
+        this.planning.map((item:any) => {
+          let dataStartExecution = new Date(item.startExecution);
+          let dataHoje = new Date();
+
+          dataStartExecution.setDate(dataStartExecution.getDate() + parseInt(item.runtime));
+
+          if (dataStartExecution < dataHoje && item.status != "No prazo") {
+            item.status = "No prazo";
+          }
+
+          if (dataStartExecution > dataHoje && item.status != "Fora prazo") {
+            item.status = "Fora prazo";
+          }
+
+          if (item.concluded == "Concluido" && item.status != "Concluído") {
+            item.status = "Concluído";
+          }
+        })
+
         this.hiringProcesses = this.planning;
         this.planning = [...this.hiringProcesses];
         this.populateDisclaimers(['Em andamento']);
       },
       error: err => {
         this.planning = this.poPageListService.getItems();
+
+        this.planning.map((item:any) => {
+          let dataStartExecution = new Date(item.startExecution);
+          let dataHoje = new Date();
+
+          dataStartExecution.setDate(dataStartExecution.getDate() + parseInt(item.runtime));
+
+          if (dataStartExecution < dataHoje) {
+            item.status = "No prazo";
+          } else {
+            item.status = "Fora prazo";
+          }
+
+          if (item.concluded == "Concluido") {
+            item.status = "Concluido";
+          }
+        })
+
         this.hiringProcesses = this.planning;
         this.planning = [...this.hiringProcesses];
         this.populateDisclaimers(['Em andamento']);
-        this.poNotification.error(`Banco de dados offline!`)
 
         console.log(err);
       }
@@ -224,7 +180,6 @@ export class PageListComponent implements OnInit {
             this.getPlanning();
           },
           error: err =>  {
-            this.poNotification.error(`Banco de dados offline!`)
             this.planning.push(planning);
 
             console.log(err);
@@ -243,8 +198,6 @@ export class PageListComponent implements OnInit {
             this.getPlanning();
           },
           error: err =>  {
-            this.poNotification.error(`Banco de dados offline!`)
-
             var indice = this.planning.indexOf(selectedCandidate);
 
             this.planning.splice(indice, 1);
@@ -272,33 +225,34 @@ export class PageListComponent implements OnInit {
 
   filter() {
     const filters = this.disclaimers.map((disclaimer: any) => disclaimer.value);
+
     filters.length ? this.hiringProcessesFilter(filters) : this.resetFilterHiringProcess();
   }
 
   filterAction(labelFilter: string | Array<string>) {
     const filter = typeof labelFilter === 'string' ? [labelFilter] : [...labelFilter];
+
     this.populateDisclaimers(filter);
     this.filter();
   }
 
   concludePlanning() {
     const selectedCandidate: any = this.hiringProcesses.find((candidate: any) => candidate['$selected']);
+
     switch (selectedCandidate['concluded']) {
       case 'Concluido':
         console.log("ID do registro: ", selectedCandidate['id'], ", ", selectedCandidate['concluded']);
-        
         selectedCandidate['concluded'] = 'Em andamento';
 
         this.poNotification.warning('Programação em andamento!');
-        break;
+      break;
 
       case 'Em andamento':
         console.log("ID do registro: ", selectedCandidate['id'], ", ", selectedCandidate['concluded']);
-
         selectedCandidate['concluded'] = 'Concluido';
 
         this.poNotification.success('Programação concluída com sucesso!');
-        break;
+      break;
     }
   }
 
@@ -321,12 +275,14 @@ export class PageListComponent implements OnInit {
     if (disclaimers.removedDisclaimer.property === 'search') {
       this.poPageList.clearInputSearch();
     }
+
     this.disclaimers = [];
     this.filter();
   }
 
   populateDisclaimers(filters: Array<any>) {
     const property = filters.length > 1 ? 'advanced' : 'search';
+
     this.disclaimers = filters.map(value => ({ value, property }));
 
     if (this.disclaimers && this.disclaimers.length > 0) {

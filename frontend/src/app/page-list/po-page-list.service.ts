@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
-import { PoTableColumn } from '@po-ui/ng-components';
 import { Observable } from 'rxjs';
+
+import { PoDynamicFormField, PoTableColumn } from '@po-ui/ng-components';
+
 import { environment } from 'src/environments/environment';
 import { Planning } from './planning.model';
 
@@ -34,6 +35,89 @@ export class PoPageListService {
     ];
   }
 
+  getFields(): Array<PoDynamicFormField> {
+    return [
+      {
+        label: 'Descrição',
+        property: 'description',
+        required: true,
+        minLength: 2,
+        maxLength: 50,
+        gridColumns: 6,
+        gridSmColumns: 12,
+        order: 1
+      },
+      {
+        label: 'Prioridade',
+        property: 'priority',
+        required: true,
+        minLength: 2,
+        maxLength: 50,
+        gridColumns: 6,
+        gridSmColumns: 12,
+        order: 1
+      },
+      {
+        label: 'Responsável',
+        property: 'responsible',
+        required: true,
+        minLength: 2,
+        maxLength: 50,
+        gridColumns: 6,
+        gridSmColumns: 12,
+        order: 1
+      },
+      {
+        label: 'Tempo de execução',
+        property: 'runtime',
+        required: true,
+        minLength: 2,
+        maxLength: 50,
+        gridColumns: 6,
+        gridSmColumns: 12,
+        order: 1
+      },
+      {
+        property: 'startExecution',
+        label: 'Início de execução',
+        type: 'date',
+        format: 'mm/dd/yyyy',
+        gridColumns: 6,
+        gridSmColumns: 12,
+        errorMessage: 'The date must be before the year 2010.',
+        order: 1
+      },
+      {
+        label: 'Relação a obras',
+        property: 'relationWork',
+        required: true,
+        gridColumns: 6,
+        gridSmColumns: 12,
+        options: ['Sim', 'Não'],
+        order: 1
+      },
+      {
+        label: 'Veículo',
+        property: 'vehicle',
+        required: true,
+        minLength: 2,
+        maxLength: 50,
+        gridColumns: 6,
+        gridSmColumns: 12,
+        order: 1
+      },
+      {
+        label: 'Opera fim de semana',
+        property: 'operationWeekend',
+        required: true,
+        gridColumns: 6,
+        gridSmColumns: 12,
+        options: ['Sim', 'Não'],
+        order: 1
+      }
+    ];
+  }
+
   getHireStatus() {
     return [
       { value: 'Concluido', label: 'Concluído' },
@@ -49,8 +133,8 @@ export class PoPageListService {
         description: 'ACPO Home',
         priority: '1-iniciar agora',
         responsible: 'João, José',
-        runtime: '730',
-        startExecution: '01/02/20',
+        runtime: '10',
+        startExecution: '2021-08-15 04:00:00.000',
         status: 'No Prazo',
         relationWork: 'Sim',
         vehicle: 'Vai direto',
@@ -63,8 +147,8 @@ export class PoPageListService {
         description: 'ACPO Exemplo 002',
         priority: '1-iniciar agora',
         responsible: 'Maria',
-        runtime: '730',
-        startExecution: '01/02/20',
+        runtime: '20',
+        startExecution: '2021-08-15 04:00:00.000',
         status: 'No Prazo',
         relationWork: 'Sim',
         vehicle: 'Vai direto',
@@ -77,8 +161,8 @@ export class PoPageListService {
         description: 'Exemplo 003',
         priority: '2-iniciar na data programada',
         responsible: 'Jurema, Maradona',
-        runtime: '730',
-        startExecution: '01/02/20',
+        runtime: '30',
+        startExecution: '2021-08-15 04:00:00.000',
         status: 'No Prazo',
         relationWork: 'Sim',
         vehicle: 'Vai direto',
@@ -91,8 +175,8 @@ export class PoPageListService {
         description: 'Exemplo 005',
         priority: '2-iniciar na data programada',
         responsible: 'Pelé, Bill Gates',
-        runtime: '730',
-        startExecution: '01/02/20',
+        runtime: '30',
+        startExecution: '2021-02-08 04:00:00.000',
         status: 'No Prazo',
         relationWork: 'Sim',
         vehicle: 'Vai direto',
@@ -105,8 +189,8 @@ export class PoPageListService {
         description: 'Exemplo 009',
         priority: '1-iniciar agora',
         responsible: 'Joelma, Frederico',
-        runtime: '730',
-        startExecution: '01/02/20',
+        runtime: '50',
+        startExecution: '2021-02-08 04:00:00.000',
         status: 'No Prazo',
         relationWork: 'Sim',
         vehicle: 'Vai direto',
@@ -119,8 +203,8 @@ export class PoPageListService {
         description: 'Projeto teste',
         priority: '1-iniciar agora',
         responsible: 'Jorgita',
-        runtime: '730',
-        startExecution: '01/02/20',
+        runtime: '10',
+        startExecution: '2021-02-08 04:00:00.000',
         status: 'Fora do prazo',
         relationWork: 'Sim',
         vehicle: 'Empresa',
@@ -133,8 +217,8 @@ export class PoPageListService {
         description: 'Buscar algo',
         priority: '2-iniciar na data programada',
         responsible: 'Klarckson Neves',
-        runtime: '730',
-        startExecution: '01/02/20',
+        runtime: '25',
+        startExecution: '2021-02-08 04:00:00.000',
         status: 'Fora do prazo',
         relationWork: 'Sim',
         vehicle: 'Ka Hatch',

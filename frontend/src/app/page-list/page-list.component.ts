@@ -113,24 +113,7 @@ export class PageListComponent implements OnInit {
           item.scheduleTomorrow
         ))
 
-        this.planning.map((item:any) => {
-          let dataStartExecution = new Date(item.startExecution);
-          let dataHoje = new Date();
-
-          dataStartExecution.setDate(dataStartExecution.getDate() + parseInt(item.runtime));
-
-          if (dataStartExecution < dataHoje && item.status != "No prazo") {
-            item.status = "No prazo";
-          }
-
-          if (dataStartExecution > dataHoje && item.status != "Fora prazo") {
-            item.status = "Fora prazo";
-          }
-
-          if (item.concluded == "Concluido" && item.status != "Concluído") {
-            item.status = "Concluído";
-          }
-        })
+        this.updateStartExecution();
 
         this.hiringProcesses = this.planning;
         this.planning = [...this.hiringProcesses];
@@ -139,22 +122,7 @@ export class PageListComponent implements OnInit {
       error: err => {
         this.planning = this.poPageListService.getItems();
 
-        this.planning.map((item:any) => {
-          let dataStartExecution = new Date(item.startExecution);
-          let dataHoje = new Date();
-
-          dataStartExecution.setDate(dataStartExecution.getDate() + parseInt(item.runtime));
-
-          if (dataStartExecution < dataHoje) {
-            item.status = "No prazo";
-          } else {
-            item.status = "Fora prazo";
-          }
-
-          if (item.concluded == "Concluido") {
-            item.status = "Concluido";
-          }
-        })
+        this.updateStartExecution();
 
         this.hiringProcesses = this.planning;
         this.planning = [...this.hiringProcesses];
@@ -164,6 +132,27 @@ export class PageListComponent implements OnInit {
       }
     });
   }
+
+  updateStartExecution() {
+    this.planning.map((item:any) => {
+      let dataStartExecution = new Date(item.startExecution);
+      let dataHoje = new Date();
+
+      dataStartExecution.setDate(dataStartExecution.getDate() + parseInt(item.runtime));
+
+      if (dataStartExecution < dataHoje && item.status != "No prazo") {
+        item.status = "No prazo";
+      }
+
+      if (dataStartExecution > dataHoje && item.status != "Fora prazo") {
+        item.status = "Fora prazo";
+      }
+
+      if (item.concluded == "Concluido" && item.status != "Concluido") {
+        item.status = "Concluido";
+      }
+    })
+  }  
 
   savePlanning(planning: Planning) {
     planning.concluded = 'Em andamento';

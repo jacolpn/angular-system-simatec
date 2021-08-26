@@ -17,6 +17,7 @@ export class PoPageListService {
         property: 'concluded',
         label: 'Concluído',
         type: 'subtitle',
+        width: '100px',
         subtitles: [
           { value: 'Concluido', color: 'success', label: 'Concluído', content: '1' },
           { value: 'Em andamento', color: 'warning', label: 'Em andamento', content: '2' }
@@ -81,10 +82,9 @@ export class PoPageListService {
         property: 'startExecution',
         label: 'Início de execução',
         type: 'date',
-        format: 'mm/dd/yyyy',
+        format: 'dd/mm/yyyy',
         gridColumns: 6,
         gridSmColumns: 12,
-        errorMessage: 'The date must be before the year 2010.',
         order: 1
       },
       {

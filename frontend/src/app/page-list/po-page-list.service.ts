@@ -15,7 +15,7 @@ export class PoPageListService {
     return [
       {
         property: 'concluded',
-        label: 'Concluído',
+        label: 'Concluido',
         type: 'subtitle',
         width: '100px',
         subtitles: [

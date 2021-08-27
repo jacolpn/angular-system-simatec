@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { PoCheckboxGroupOption, PoDynamicFormField } from '@po-ui/ng-components';
+import { PoDialogService } from '@po-ui/ng-components';
 import { PoModalAction } from '@po-ui/ng-components';
 import { PoNotificationService } from '@po-ui/ng-components';
 import { PoPageAction, PoPageFilter } from '@po-ui/ng-components';
@@ -79,7 +80,11 @@ export class PageListComponent implements OnInit {
 
   private disclaimers: any = [];
 
-  constructor(private poNotification: PoNotificationService, private poPageListService: PoPageListService) { }
+  constructor(
+    private poNotification: PoNotificationService,
+    private poPageListService: PoPageListService,
+    private poDialog: PoDialogService
+  ) { }
 
   ngOnInit() {
     this.disclaimerGroup = {
@@ -240,21 +245,28 @@ export class PageListComponent implements OnInit {
   excludePlannig() {
     const selectedCandidate: any = this.hiringProcesses.find((candidate: any) => candidate['$selected']);
 
-    this.poPageListService
-        .putPlanning(selectedCandidate['id'])
-        .subscribe({
-          next: value => {
-            this.poNotification.success('Programação removida com sucesso!');
-            this.getPlanning();
-          },
-          error: err =>  {
-            var indice = this.planning.indexOf(selectedCandidate);
+    this.poDialog.confirm({
+      title: `Exclusão`,
+      message: `Deseja realmente excluir o registro <b>${selectedCandidate['description']}</b>?`,
+      confirm: () => {
+        this.poPageListService
+          .putPlanning(selectedCandidate['id'])
+          .subscribe({
+            next: value => {
+              this.poNotification.success('Programação removida com sucesso!');
+              this.getPlanning();
+            },
+            error: err =>  {
+              this.poNotification.success('Programação removida com sucesso!');
+              var indice = this.planning.indexOf(selectedCandidate);
 
-            this.planning.splice(indice, 1);
+              this.planning.splice(indice, 1);
 
-            console.log(err);
-          }
-        });
+              console.log(err);
+            }
+          });
+      }
+    });
   }
 
   closeModal() {
@@ -289,21 +301,27 @@ export class PageListComponent implements OnInit {
   concludePlanning() {
     const selectedCandidate: any = this.hiringProcesses.find((candidate: any) => candidate['$selected']);
 
-    switch (selectedCandidate['concluded']) {
-      case 'Concluido':
-        console.log("ID do registro: ", selectedCandidate['id'], ", ", selectedCandidate['concluded']);
-        selectedCandidate['concluded'] = 'Em andamento';
+    this.poDialog.confirm({
+      title: `Alteração`,
+      message: `Deseja realmente alterar a conclusão do registro <b>${selectedCandidate['description']}</b>?`,
+      confirm: () => {
+        switch (selectedCandidate['concluded']) {
+          case 'Concluido':
+            console.log("ID do registro: ", selectedCandidate['id'], ", ", selectedCandidate['concluded']);
+            selectedCandidate['concluded'] = 'Em andamento';
 
-        this.poNotification.warning('Programação em andamento!');
-      break;
+            this.poNotification.warning('Programação em andamento!');
+          break;
 
-      case 'Em andamento':
-        console.log("ID do registro: ", selectedCandidate['id'], ", ", selectedCandidate['concluded']);
-        selectedCandidate['concluded'] = 'Concluido';
+          case 'Em andamento':
+            console.log("ID do registro: ", selectedCandidate['id'], ", ", selectedCandidate['concluded']);
+            selectedCandidate['concluded'] = 'Concluido';
 
-        this.poNotification.success('Programação concluída com sucesso!');
-      break;
-    }
+            this.poNotification.success('Programação concluída com sucesso!');
+          break;
+        }
+      }
+    });
   }
 
   hiringProcessesFilter(filters: any) {

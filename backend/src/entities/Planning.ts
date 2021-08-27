@@ -7,7 +7,7 @@ class Planning {
     readonly id: string;
 
     @Column()
-    concluded: string;
+    situation: string;
 
     @Column()
     description: string;

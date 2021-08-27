@@ -1,25 +1,24 @@
 import { Router } from "express";
 
 import { AuthenticateUserController } from "./controllers/AuthenticateUserController";
-import { CreatePlanningController } from "./controllers/CreatePlanningController";
-import { CreateUserController } from "./controllers/CreateUserController";
-import { ListPlanningController } from "./controllers/ListPlanningController";
-import { ListUserController } from "./controllers/ListUserController";
-import { ensureAdmin } from "./middlewares/ensureAdmin";
-import { ensureAuthenticated } from "./middlewares/ensureAuthenticated";
+import { PlanningController } from "./controllers/PlanningController";
+import { UserController } from "./controllers/UserController";
 
 const router = Router();
-const createUserController = new CreateUserController();
+
 const autenthicateUserController = new AuthenticateUserController();
-const listUserController = new ListUserController();
-const createPlanningController = new CreatePlanningController();
-const listPlanningController = new ListPlanningController();
+const userController = new UserController();
+const planningControll = new PlanningController();
 
-router.post("/users", createUserController.handle);
+router.post("/users", userController.create);
 router.post("/login", autenthicateUserController.handle);
-router.post("/planning", createPlanningController.handle);
+router.post("/planning", planningControll.create);
 
-router.get('/users', listUserController.handle);
-router.get("/planning", listPlanningController.handle);
+router.get("/users", userController.list);
+router.get("/planning", planningControll.list);
+
+router.put("/planning/:id", planningControll.update);
+
+router.delete("/planning/:id", planningControll.delete);
 
 export { router };

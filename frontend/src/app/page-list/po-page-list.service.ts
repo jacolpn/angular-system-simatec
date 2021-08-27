@@ -236,7 +236,12 @@ export class PoPageListService {
     return this.http.post<any>(`${environment.api}/planning`, planning);
   }
 
-  putPlanning(id: String): Observable<string> {
+  putPlanning(body: any): Observable<string> {
+    return this.http.put<any>(`${environment.api}/planning`, body);
+  }
+
+  deletePlanning(id: String): Observable<string> {
     return this.http.put<any>(`${environment.api}/planning`, id);
   }
+  
 }

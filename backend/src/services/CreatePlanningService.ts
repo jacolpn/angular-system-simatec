@@ -2,7 +2,7 @@ import { getCustomRepository } from "typeorm";
 import { PlanningRepositories } from "../repositories/PlanningRepositories";
 
 interface IAuthenticateRequest {
-    concluded: string;
+    situation: string;
     description: string;
     priority: string;
     responsible: string;
@@ -18,7 +18,7 @@ interface IAuthenticateRequest {
 class CreatePlanningService {
     async execute(response) {
         const {
-            concluded,
+            situation,
             description,
             priority,
             responsible,
@@ -34,7 +34,7 @@ class CreatePlanningService {
         const planningRepositories = getCustomRepository(PlanningRepositories);
 
         const planning = planningRepositories.create({
-            concluded,
+            situation,
             description,
             priority,
             responsible,

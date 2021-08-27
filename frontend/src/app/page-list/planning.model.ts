@@ -1,7 +1,7 @@
 class Planning {
     constructor(
         public id: string,
-        public concluded: string,
+        public situation: string,
         public description: string,
         public priority: string,
         public responsible: string,

@@ -17,7 +17,7 @@ router.post("/planning", planningControll.create);
 router.get("/users", userController.list);
 router.get("/planning", planningControll.list);
 
-router.put("/planning/:id", planningControll.update);
+router.put("/planning", planningControll.update);
 
 router.delete("/planning/:id", planningControll.delete);
 

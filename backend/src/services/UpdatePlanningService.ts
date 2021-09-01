@@ -1,4 +1,5 @@
 import { getCustomRepository } from "typeorm";
+import { Planning } from "../entities/Planning";
 import { PlanningRepositories } from "../repositories/PlanningRepositories";
 
 interface IUpdateSituation {
@@ -8,14 +9,13 @@ interface IUpdateSituation {
 
 class UpdatePlanningService {
     async execute(response) {
-        const {situation, id }: IUpdateSituation = response;
-
+        const {situation, id }: IUpdateSituation = response;        
         const planningRepositories = getCustomRepository(PlanningRepositories);
 
-        await planningRepositories.findOne({id : id}).then((planning) => {
-            planning.situation = situation;
-            planningRepositories.save(planning);
-        });
+        var planning: Planning = await planningRepositories.findOne({id : id}).then((planning) => planning);
+
+        planning.situation = situation == 'Concluido' ? 'Em andamento' : 'Concluido';
+        planningRepositories.save(planning);
     }
 }
 

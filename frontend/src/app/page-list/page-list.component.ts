@@ -208,8 +208,7 @@ export class PageListComponent implements OnInit {
     let dataFindSemana;
     let scheduleTomorrow;
 
-    dataFindSemana =
-      dataHoje.getDay() == 0 || dataHoje.getDay() == 6 ? true : false;
+    dataFindSemana = dataHoje.getDay() == 0 || dataHoje.getDay() == 6 ? true : false;
     dataHoje.setDate(dataHoje.getDate() + 1);
     scheduleTomorrow = 'Não';
 
@@ -264,9 +263,7 @@ export class PageListComponent implements OnInit {
   }
 
   excludePlannig() {
-    const selectedPlanning: any = this.hiringProcesses.find(
-      (planning: any) => planning['$selected']
-    );
+    const selectedPlanning: any = this.hiringProcesses.find((planning: any) => planning['$selected']);
 
     this.poDialog.confirm({
       title: `Exclusão`,
@@ -276,14 +273,11 @@ export class PageListComponent implements OnInit {
           .deletePlanning(selectedPlanning['id'])
           .subscribe({
             next: (value) => {
-              this.poNotification.success(
-                'Programação removida com sucesso!'
-              );
+              this.poNotification.success('Programação removida com sucesso!');
               this.getPlanning();
             },
             error: (err) => {
-              var indice =
-                this.planning.indexOf(selectedPlanning);
+              var indice = this.planning.indexOf(selectedPlanning);
 
               this.planning.splice(indice, 1);
 
@@ -295,9 +289,7 @@ export class PageListComponent implements OnInit {
   }
 
   updateSituation() {
-    const selectedPlanning: any = this.hiringProcesses.find(
-      (planning: any) => planning['$selected']
-    );
+    const selectedPlanning: any = this.hiringProcesses.find((planning: any) => planning['$selected']);
 
     this.poDialog.confirm({
       title: `Alteração`,
@@ -347,9 +339,7 @@ export class PageListComponent implements OnInit {
             selectedPlanning['operationWeekend']
           );
 
-        this.poNotification.success(
-          'Programação concluída com sucesso!'
-        );
+        this.poNotification.success('Programação concluída com sucesso!');
         break;
     }
   }
@@ -366,15 +356,11 @@ export class PageListComponent implements OnInit {
   }
 
   disableHireButton() {
-    return !this.hiringProcesses.find(
-      (planning: any) => planning['$selected']
-    );
+    return !this.hiringProcesses.find((planning: any) => planning['$selected']);
   }
 
   filter() {
-    const filters = this.disclaimers.map(
-      (disclaimer: any) => disclaimer.value
-    );
+    const filters = this.disclaimers.map((disclaimer: any) => disclaimer.value);
 
     filters.length
       ? this.hiringProcessesFilter(filters)
@@ -382,8 +368,7 @@ export class PageListComponent implements OnInit {
   }
 
   filterAction(labelFilter: string | Array<string>) {
-    const filter =
-      typeof labelFilter === 'string' ? [labelFilter] : [...labelFilter];
+    const filter = typeof labelFilter === 'string' ? [labelFilter] : [...labelFilter];
 
     this.populateDisclaimers(filter);
     this.filter();
@@ -392,9 +377,7 @@ export class PageListComponent implements OnInit {
   hiringProcessesFilter(filters: any) {
     this.planning = this.hiringProcesses.filter((item: any) =>
       Object.keys(item).some(
-        (key) =>
-          !(item[key] instanceof Object) &&
-          this.includeFilter(item[key], filters)
+        (key) => !(item[key] instanceof Object) && this.includeFilter(item[key], filters)
       )
     );
   }

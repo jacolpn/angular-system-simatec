@@ -1,1 +1,29 @@
-<app-page-list></app-page-list>
+<po-modal
+  #loginModal
+  [p-hide-close]="true"
+  p-size="auto"
+  p-title="Confirme sua identidade"
+  [p-primary-action]="loginPrimaryAction"
+>
+  <po-login
+    name="userLogin"
+    [(ngModel)]="userLogin"
+    p-clean
+    p-label="Usuário"
+    p-placeholder="Insira seu usuário"
+    p-required
+  >
+  </po-login>
+
+  <po-password
+    name="userPassword"
+    [(ngModel)]="userPassword"
+    p-clean
+    p-label="Senha"
+    p-placeholder="Insira sua senha"
+    p-required
+  >
+  </po-password>
+</po-modal>
+
+<app-page-list *ngIf="pagePlanning"></app-page-list>

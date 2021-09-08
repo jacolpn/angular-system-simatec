@@ -8,6 +8,7 @@ import { PoModalAction, PoNotificationService } from '@po-ui/ng-components';
 })
 export class AppComponent implements OnInit {
   @ViewChild('loginModal', { static: true }) loginModal: any;
+  @ViewChild('loginInput', { static: true }) loginInput: any;
   pagePlanning: boolean = false;
   userLogin: string = '';
   userPassword: string = '';
@@ -23,6 +24,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.loginModal.open();
+    this.loginInput.focus();
   }
 
   private cleanForm(): void {
@@ -30,7 +32,7 @@ export class AppComponent implements OnInit {
     this.userPassword = '';
   }
 
-  private confirmAction(): void {
+  confirmAction(): void {
     if (this.userLogin == 'admin' && this.userPassword == '1234') {
       this.pagePlanning = true;
       this.loginModal.close();

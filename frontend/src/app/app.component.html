@@ -6,22 +6,25 @@
   [p-primary-action]="loginPrimaryAction"
 >
   <po-login
+    #loginInput
+    p-required
     name="userLogin"
     [(ngModel)]="userLogin"
     p-clean
     p-label="Usuário"
     p-placeholder="Insira seu usuário"
-    p-required
+    (keydown.enter)="confirmAction()"
   >
   </po-login>
 
   <po-password
+    p-required
     name="userPassword"
     [(ngModel)]="userPassword"
     p-clean
     p-label="Senha"
     p-placeholder="Insira sua senha"
-    p-required
+    (keydown.enter)="confirmAction()"
   >
   </po-password>
 </po-modal>

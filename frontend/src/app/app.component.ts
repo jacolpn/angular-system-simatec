@@ -21,16 +21,16 @@ export class AppComponent implements OnInit {
 
   constructor(private poNotification: PoNotificationService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loginModal.open();
   }
 
-  private cleanForm() {
+  private cleanForm(): void {
     this.userLogin = '';
     this.userPassword = '';
   }
 
-  private confirmAction() {
+  private confirmAction(): void {
     if (this.userLogin == 'admin' && this.userPassword == '1234') {
       this.pagePlanning = true;
       this.loginModal.close();

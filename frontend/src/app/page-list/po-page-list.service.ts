@@ -11,6 +11,90 @@ import { Planning } from './planning.model';
 export class PoPageListService {
   constructor(private http: HttpClient) { }
 
+  getPlanning() {
+    return this.http.get<any>(`${environment.api}/planning`);
+  }
+
+  postPlanning(planning: Planning): Observable<string> {
+    return this.http.post<any>(`${environment.api}/planning`, planning);
+  }
+
+  updateSituation(body: any): Observable<string> {
+    return this.http.put<any>(`${environment.api}/planning`, body);
+  }
+
+  deletePlanning(id: String): Observable<string> {
+    return this.http.delete<any>(`${environment.api}/planning/${id}`);
+  }
+
+  updateStartExecution(
+    startExecution: Date,
+    runtime: string,
+    situation: string
+  ): string {
+    let dataStartExecution = new Date(startExecution);
+    let dataHoje = new Date();
+    let status;
+
+    dataStartExecution.setDate(dataStartExecution.getDate() + parseInt(runtime));
+    status = 'No prazo';
+
+    if (dataStartExecution < dataHoje) {
+      status = 'No prazo';
+    }
+
+    if (dataStartExecution > dataHoje) {
+      status = 'Fora prazo';
+    }
+
+    if (situation == 'Concluido') {
+      status = 'Concluido';
+    }
+
+    return status;
+  }
+
+  updateScheduleTomorrow(
+    startExecution: Date,
+    situation: string,
+    priority: string,
+    operationWeekend: string
+  ): string {
+    let dataStartExecution = new Date(startExecution);
+    let dataHoje = new Date();
+    let dataFindSemana;
+    let scheduleTomorrow;
+
+    dataFindSemana = dataHoje.getDay() == 0 || dataHoje.getDay() == 6 ? true : false;
+    dataHoje.setDate(dataHoje.getDate() + 1);
+    scheduleTomorrow = 'Não';
+
+    if (situation != 'Concluido') {
+      if (parseInt(priority) < 2 && dataStartExecution <= dataHoje) {
+        if (dataFindSemana == true && operationWeekend == 'Sim') {
+          scheduleTomorrow = 'Sim';
+        }
+
+        if (dataFindSemana == false && operationWeekend == 'Sim') {
+          scheduleTomorrow = 'Sim';
+        }
+
+        if (dataFindSemana == true && operationWeekend == 'Não') {
+          scheduleTomorrow = 'Sim';
+        }
+      }
+    }
+
+    return scheduleTomorrow;
+  }
+
+  getHireStatus() {
+    return [
+      { value: 'Concluido', label: 'Concluído' },
+      { value: 'Em andamento', label: 'Em andamento' },
+    ];
+  }
+
   getColumns(): Array<PoTableColumn> {
     return [
       {
@@ -53,7 +137,7 @@ export class PoPageListService {
   getFields(): Array<PoDynamicFormField> {
     return [
       {
-        label: 'Descrição',
+        label: 'Descrição *',
         property: 'description',
         required: true,
         minLength: 2,
@@ -63,17 +147,18 @@ export class PoPageListService {
         order: 1,
       },
       {
-        label: 'Prioridade',
+        label: 'Prioridade *',
         property: 'priority',
+        type: 'number',
         required: true,
-        minLength: 2,
+        minLength: 1,
         maxLength: 50,
         gridColumns: 6,
         gridSmColumns: 12,
         order: 1,
       },
       {
-        label: 'Responsável',
+        label: 'Responsável *',
         property: 'responsible',
         required: true,
         minLength: 2,
@@ -83,18 +168,19 @@ export class PoPageListService {
         order: 1,
       },
       {
-        label: 'Tempo de execução',
+        label: 'Tempo de execução *',
         property: 'runtime',
+        type: 'number',
         required: true,
-        minLength: 2,
+        minLength: 1,
         maxLength: 50,
         gridColumns: 6,
         gridSmColumns: 12,
         order: 1,
       },
       {
+        label: 'Início de execução *',
         property: 'startExecution',
-        label: 'Início de execução',
         type: 'date',
         format: 'dd/mm/yyyy',
         gridColumns: 6,
@@ -102,7 +188,7 @@ export class PoPageListService {
         order: 1,
       },
       {
-        label: 'Relação a obras',
+        label: 'Relação a obras *',
         property: 'relationWork',
         required: true,
         gridColumns: 6,
@@ -111,7 +197,7 @@ export class PoPageListService {
         order: 1,
       },
       {
-        label: 'Veículo',
+        label: 'Veículo *',
         property: 'vehicle',
         required: true,
         minLength: 2,
@@ -121,7 +207,7 @@ export class PoPageListService {
         order: 1,
       },
       {
-        label: 'Opera fim de semana',
+        label: 'Opera fim de semana *',
         property: 'operationWeekend',
         required: true,
         gridColumns: 6,
@@ -130,131 +216,5 @@ export class PoPageListService {
         order: 1,
       },
     ];
-  }
-
-  getHireStatus() {
-    return [
-      { value: 'Concluido', label: 'Concluído' },
-      { value: 'Em andamento', label: 'Em andamento' },
-    ];
-  }
-
-  getItems() {
-    return [
-      {
-        id: '1',
-        situation: 'Concluido',
-        description: 'ACPO Home',
-        priority: '1-iniciar agora',
-        responsible: 'João, José',
-        runtime: '10',
-        startExecution: '2021-08-15 04:00:00.000',
-        status: 'No Prazo',
-        relationWork: 'Sim',
-        vehicle: 'Vai direto',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim',
-      },
-      {
-        id: '2',
-        situation: 'Em andamento',
-        description: 'ACPO Exemplo 002',
-        priority: '1-iniciar agora',
-        responsible: 'Maria',
-        runtime: '20',
-        startExecution: '2021-08-15 04:00:00.000',
-        status: 'No Prazo',
-        relationWork: 'Sim',
-        vehicle: 'Vai direto',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim',
-      },
-      {
-        id: '3',
-        situation: 'Em andamento',
-        description: 'Exemplo 003',
-        priority: '2-iniciar na data programada',
-        responsible: 'Jurema, Maradona',
-        runtime: '30',
-        startExecution: '2021-08-15 04:00:00.000',
-        status: 'No Prazo',
-        relationWork: 'Sim',
-        vehicle: 'Vai direto',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim',
-      },
-      {
-        id: '4',
-        situation: 'Em andamento',
-        description: 'Exemplo 005',
-        priority: '2-iniciar na data programada',
-        responsible: 'Pelé, Bill Gates',
-        runtime: '30',
-        startExecution: '2021-02-08 04:00:00.000',
-        status: 'No Prazo',
-        relationWork: 'Sim',
-        vehicle: 'Vai direto',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim',
-      },
-      {
-        id: '5',
-        situation: 'Concluido',
-        description: 'Exemplo 009',
-        priority: '1-iniciar agora',
-        responsible: 'Joelma, Frederico',
-        runtime: '50',
-        startExecution: '2021-02-08 04:00:00.000',
-        status: 'No Prazo',
-        relationWork: 'Sim',
-        vehicle: 'Vai direto',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim',
-      },
-      {
-        id: '6',
-        situation: 'Em andamento',
-        description: 'Projeto teste',
-        priority: '1-iniciar agora',
-        responsible: 'Jorgita',
-        runtime: '10',
-        startExecution: '2021-02-08 04:00:00.000',
-        status: 'Fora do prazo',
-        relationWork: 'Sim',
-        vehicle: 'Empresa',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim',
-      },
-      {
-        id: '7',
-        situation: 'Em andamento',
-        description: 'Buscar algo',
-        priority: '2-iniciar na data programada',
-        responsible: 'Klarckson Neves',
-        runtime: '25',
-        startExecution: '2021-02-08 04:00:00.000',
-        status: 'Fora do prazo',
-        relationWork: 'Sim',
-        vehicle: 'Ka Hatch',
-        operationWeekend: 'Não',
-        scheduleTomorrow: 'Sim',
-      },
-    ];
-  }
-
-  getPlanningHTTP() {
-    return this.http.get<any>(`${environment.api}/planning`);
-  }
-
-  postPlanning(planning: Planning): Observable<string> {
-    return this.http.post<any>(`${environment.api}/planning`, planning);
-  }
-
-  updateSituation(body: any): Observable<string> {
-    return this.http.put<any>(`${environment.api}/planning`, body);
-  }
-
-  deletePlanning(id: String): Observable<string> {
-    return this.http.delete<any>(`${environment.api}/planning/${id}`);
   }
 }

@@ -7,6 +7,7 @@ import { PoModule } from '@po-ui/ng-components';
 
 import { AppComponent } from './app.component';
 import { PageListComponent } from './page-list/page-list.component';
+import { OfflineService } from './page-list/offline.service';
 import { PoPageListService } from './page-list/po-page-list.service';
 
 @NgModule({
@@ -21,7 +22,7 @@ import { PoPageListService } from './page-list/po-page-list.service';
     FormsModule,
     RouterModule.forRoot([])
   ],
-  providers: [PoPageListService],
+  providers: [PoPageListService, OfflineService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
